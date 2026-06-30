@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VerdeArt Paysage | La nature, sculptée.</title>
+  <meta name="description" content="VerdeArt Paysage - Concepteur et sculpteur de jardins d'exception, terrasses végétalisées et espaces extérieurs haut de gamme à Paris et Île-de-France.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       01. CONFIGURATION & VARIABLES GLOBALES
+       ========================================================================== */
+    :root {
+      --color-bg-primary: #0A0C0A;
+      --color-bg-secondary: #121612;
+      --color-bg-accent: #0F130F;
+      --color-green: #4A7C59;
+      --color-green-light: #8BC34A;
+      --color-gold: #C9A84C;
+      --color-cream: #E8E3D5;
+      --color-muted: #9A9485;
+      --color-glow: rgba(139, 195, 74, 0.15);
+      
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'DM Sans', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+      scroll-behavior: auto; /* Control via GSAP for better experience */
+      overflow-x: hidden;
+      background-color: var(--color-bg-primary);
+    }
+
+    body {
+      background-color: var(--color-bg-primary);
+      color: var(--color-cream);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--color-bg-primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-green);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-green-light);
+    }
+
+    ::selection {
+      background-color: var(--color-green);
+      color: var(--color-cream);
+    }
+
+    input:focus-visible, 
+    textarea:focus-visible, 
+    select:focus-visible, 
+    button:focus-visible, 
+    a:focus-visible {
+      outline: 2px solid var(--color-gold);
+      outline-offset: 4px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      color: var(--color-cream);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Common layout styles */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 5vw;
+    }
+
+    .section-spacing {
+      padding: 15vh 0;
+      position: relative;
+    }
+
+    /* Animated background large decors */
+    .bg-number {
+      position: absolute;
+      font-family: var(--font-serif);
+      font-size: clamp(150px, 20vw, 350px);
+      font-weight: 100;
+      color: var(--color-cream);
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+    }
+
+    /* Custom Cursor */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-green);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-100px, -100px, 0) translate(-50%, -50%);
+      transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                  height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                  background-color 0.3s ease, 
+                  border 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--color-bg-primary);
+      font-family: var(--font-sans);
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    #custom-cursor.hovered {
+      width: 60px;
+      height: 60px;
+      background-color: transparent;
+      border: 1px solid var(--color-green);
+      color: var(--color-green-light);
+    }
+    #custom-cursor.hovered::after {
+      content: attr(data-text);
+    }
+
+    /* Reduced Motion fallback */
+    body.reduced-motion * {
+      animation: none !important;
+      transition: opacity 0.2s ease !important;
+      transform: none !important;
+    }
+    body.reduced-motion #custom-cursor {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       02. PRELOADER
+       ========================================================================== */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      pointer-events: all;
+    }
+    .preloader-panel {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background-color: #020302;
+    }
+    .preloader-panel-top {
+      top: 0;
+    }
+    .preloader-panel-bottom {
+      bottom: 0;
+    }
+    .preloader-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-serif);
+      font-size: 80px;
+      font-weight: 300;
+      color: var(--color-cream);
+      z-index: 10;
+      opacity: 0;
+      letter-spacing: 0.1em;
+    }
+
+    /* ==========================================================================
+       03. NAVIGATION (HEADER)
+       ========================================================================== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 35px 5vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background-color: transparent;
+      border-bottom: 1px solid transparent;
+      transition: padding 0.4s ease, background-color 0.4s ease, border-bottom 0.4s ease, backdrop-filter 0.4s ease;
+    }
+    header.scrolled {
+      padding: 20px 5vw;
+      background-color: rgba(10, 12, 10, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(74, 124, 89, 0.2);
+    }
+    .logo {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      color: var(--color-cream);
+      display: inline-block;
+    }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+    }
+    .nav-links a {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--color-muted);
+      position: relative;
+      padding: 5px 0;
+      transition: color 0.3s ease;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-cream);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .nav-links a:hover {
+      color: var(--color-cream);
+    }
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+    
+    .nav-cta a {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-cream);
+      position: relative;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    .nav-cta a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-cream);
+      transform: scaleX(1);
+      transform-origin: right;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .nav-cta a:hover::after {
+      transform: scaleX(0);
+    }
+
+    /* Mobile hamburger menu */
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+      width: 32px;
+      height: 24px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 4px;
+    }
+    .menu-bar {
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-cream);
+      transition: transform 0.4s ease, background-color 0.4s ease;
+    }
+    .menu-toggle.active .bar-top {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .menu-toggle.active .bar-bottom {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Fullscreen overlay menu */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: var(--color-bg-primary);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(-100%);
+      transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+      border-bottom: 1px solid rgba(74, 124, 89, 0.2);
+    }
+    .menu-overlay.open {
+      transform: translateY(0);
+    }
+    .menu-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+    .menu-link {
+      font-family: var(--font-serif);
+      font-size: 8vw;
+      font-weight: 300;
+      color: var(--color-cream);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    /* ==========================================================================
+       04. HERO SECTION
+       ========================================================================== */
+    #hero {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      will-change: transform;
+    }
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.2) contrast(1.05) grayscale(0.2);
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 30%, var(--color-bg-primary) 90%),
+                  linear-gradient(to bottom, transparent 60%, var(--color-bg-primary) 100%);
+      z-index: 2;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 18vw;
+      font-weight: 200;
+      color: var(--color-cream);
+      letter-spacing: -0.04em;
+      line-height: 0.9;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+    .char-wrap {
+      overflow: hidden;
+      display: inline-block;
+    }
+    .char-inner {
+      display: inline-block;
+      transform: translateY(100%);
+      will-change: transform;
+    }
+    
+    .hero-tagline-container {
+      margin-top: 25px;
+      overflow: hidden;
+    }
+    .hero-tagline {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.4em;
+      color: var(--color-green);
+      opacity: 0;
+      transform: translateY(20px);
+      display: inline-block;
+      position: relative;
+    }
+    
+    /* RGB Glitch style */
+    .hero-tagline.glitch-active {
+      text-shadow: 1.5px 0px 0px rgba(139, 195, 74, 0.8), -1.5px 0px 0px rgba(201, 168, 76, 0.8);
+      transform: translate(1px, -0.5px);
+    }
+
+    /* Floating decorator counter */
+    .hero-counter {
+      position: absolute;
+      right: 5vw;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: var(--font-serif);
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: var(--color-muted);
+      z-index: 3;
+      font-weight: 300;
+    }
+
+    /* Bottom left text */
+    .hero-info {
+      position: absolute;
+      left: 5vw;
+      bottom: 50px;
+      z-index: 3;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 300;
+      line-height: 1.8;
+      max-width: 250px;
+      color: var(--color-muted);
+    }
+
+    /* Bottom center scroll indicator */
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .scroll-line-container {
+      height: 60px;
+      width: 1px;
+      background-color: rgba(232, 227, 213, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-line-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-green-light);
+      transform: scaleY(0);
+      transform-origin: top;
+      animation: pulse-scroll 2.5s cubic-bezier(0.85, 0, 0.15, 1) infinite;
+    }
+    @keyframes pulse-scroll {
+      0% { transform: scaleY(0); transform-origin: top; }
+      45% { transform: scaleY(1); transform-origin: top; }
+      55% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+    .hero-scroll-indicator span {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      color: var(--color-muted);
+      text-transform: uppercase;
+    }
+
+    /* Bottom right spinning button */
+    .hero-cta {
+      position: absolute;
+      right: 5vw;
+      bottom: 50px;
+      z-index: 3;
+    }
+    .circle-cta {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      overflow: hidden;
+      background: transparent;
+      border: 1px solid rgba(232, 227, 213, 0.2);
+      transition: border-color 0.3s ease;
+    }
+    .circle-cta-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-green);
+      transform: scale(0);
+      border-radius: 50%;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 1;
+    }
+    .circle-cta:hover .circle-cta-bg {
+      transform: scale(1);
+    }
+    .circle-cta:hover {
+      border-color: var(--color-green-light);
+    }
+    .circle-cta-arrow {
+      font-size: 24px;
+      color: var(--color-cream);
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
+    .circle-cta:hover .circle-cta-arrow {
+      transform: scale(1.25);
+      color: #ffffff;
+    }
+    .circle-cta-border {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 1px dashed rgba(232, 227, 213, 0.4);
+      border-radius: 50%;
+      animation: spin-anim 10s linear infinite;
+      z-index: 2;
+      pointer-events: none;
+    }
+    @keyframes spin-anim {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================================
+       05. INFINITE MARQUEE
+       ========================================================================== */
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      background-color: var(--color-bg-secondary);
+      border-top: 1px solid rgba(74, 124, 89, 0.2);
+      border-bottom: 1px solid rgba(74, 124, 89, 0.2);
+      padding: 16px 0;
+      display: flex;
+      position: relative;
+      z-index: 4;
+    }
+    .marquee-track {
+      display: flex;
+      width: max-content;
+    }
+    .marquee-content {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--color-muted);
+      white-space: nowrap;
+      animation: marquee-anim 30s linear infinite;
+      padding-right: 2rem;
+    }
+    @keyframes marquee-anim {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); } /* Uses duplicate text in HTML */
+    }
+
+    /* ==========================================================================
+       06. SECTION SERVICES (ASYNCHRONOUS MAGAZINE LAYOUT)
+       ========================================================================== */
+    #services {
+      background-color: var(--color-bg-primary);
+      position: relative;
+      z-index: 3;
+    }
+    .services-intro {
+      text-align: center;
+      margin-bottom: 10vh;
+    }
+    .section-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--color-green-light);
+      margin-bottom: 15px;
+      display: block;
+    }
+    .services-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20vh;
+      margin-top: 10vh;
+    }
+    .service-item {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      position: relative;
+    }
+    .service-item:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    .service-text {
+      width: 45%;
+      position: relative;
+      z-index: 2;
+    }
+    .service-item:nth-child(odd) .service-text {
+      padding-right: 5vw;
+    }
+    .service-item:nth-child(even) .service-text {
+      padding-left: 5vw;
+    }
+    
+    /* Decors behind service texts */
+    .service-dec-num {
+      position: absolute;
+      top: -60px;
+      left: -20px;
+      font-family: var(--font-serif);
+      font-size: 130px;
+      font-weight: 100;
+      color: var(--color-cream);
+      opacity: 0.05;
+      z-index: -1;
+      line-height: 1;
+    }
+    .service-item:nth-child(even) .service-dec-num {
+      left: auto;
+      right: -20px;
+    }
+
+    .service-title {
+      font-family: var(--font-serif);
+      font-size: clamp(36px, 4.5vw, 56px);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--color-cream);
+      margin-bottom: 15px;
+    }
+    .service-gold-line {
+      width: 40px;
+      height: 1px;
+      background-color: var(--color-gold);
+      margin-bottom: 25px;
+    }
+    .service-desc {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--color-muted);
+      line-height: 1.8;
+      max-width: 450px;
+      margin-bottom: 30px;
+    }
+    .service-link {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-cream);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.3s ease;
+    }
+    .service-link span {
+      transition: transform 0.3s ease;
+    }
+    .service-link:hover {
+      color: var(--color-green-light);
+    }
+    .service-link:hover span {
+      transform: translateX(5px);
+    }
+
+    /* Services Images wrapper */
+    .service-image-container {
+      width: 45%;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      cursor: pointer;
+    }
+    
+    /* Offsetting magazine items vertically */
+    .service-item:nth-child(2) { margin-top: 5vh; }
+    .service-item:nth-child(4) { margin-top: 5vh; }
+    .service-item:nth-child(6) { margin-top: 5vh; }
+
+    /* Reveal wrapper styles */
+    .reveal-wrapper {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .reveal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-bg-primary);
+      z-index: 2;
+      transform-origin: right;
+      will-change: transform;
+    }
+    .reveal-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15);
+      transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+      will-change: transform;
+    }
+    .service-image-container:hover .reveal-image {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+
+    /* Image hover overlays */
+    .service-img-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10, 12, 10, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 3;
+      padding: 30px;
+      text-align: center;
+    }
+    .service-img-overlay-text {
+      font-family: var(--font-serif);
+      font-size: clamp(24px, 3vw, 36px);
+      color: var(--color-cream);
+      font-weight: 300;
+      transform: translateY(20px);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .service-image-container:hover .service-img-overlay {
+      opacity: 1;
+    }
+    .service-image-container:hover .service-img-overlay-text {
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       07. SECTION PORTFOLIO (HORIZONTAL PINNED SCROLL)
+       ========================================================================== */
+    #portfolio {
+      background-color: var(--color-bg-primary);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+    }
+    .portfolio-intro {
+      padding-top: 15vh;
+      padding-left: 5vw;
+      margin-bottom: 2vh;
+    }
+    .portfolio-hint-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .portfolio-hint-arrow {
+      font-size: 20px;
+      color: var(--color-gold);
+      animation: arrow-slide 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes arrow-slide {
+      from { transform: translateX(0); }
+      to { transform: translateX(10px); }
+    }
+    .portfolio-hint-text {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-muted);
+    }
+
+    .horizontal-container-outer {
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+      height: 80vh;
+      align-items: center;
+    }
+    .horizontal-container-inner {
+      display: flex;
+      flex-wrap: nowrap;
+      will-change: transform;
+      padding-left: 5vw;
+      padding-right: 15vw;
+    }
+    .portfolio-slide {
+      width: 75vw;
+      height: 60vh;
+      margin-right: 10vw;
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      position: relative;
+    }
+    .portfolio-slide-img-wrap {
+      width: 60%;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .portfolio-slide-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+      will-change: transform;
+    }
+    .portfolio-slide-info {
+      width: 40%;
+      padding-left: 5vw;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .portfolio-slide-num {
+      position: absolute;
+      top: -30px;
+      left: 3vw;
+      font-family: var(--font-serif);
+      font-size: clamp(120px, 15vw, 200px);
+      font-weight: 100;
+      color: var(--color-cream);
+      opacity: 0.05;
+      line-height: 1;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .portfolio-slide-title {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 300;
+      line-height: 1.2;
+      color: var(--color-cream);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .portfolio-slide-desc {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--color-muted);
+      line-height: 1.8;
+      margin-bottom: 25px;
+      max-width: 320px;
+      position: relative;
+      z-index: 1;
+    }
+    .portfolio-slide-meta {
+      display: flex;
+      gap: 30px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-gold);
+      position: relative;
+      z-index: 1;
+    }
+    .portfolio-slide-meta span {
+      display: block;
+    }
+
+    /* Bottom progress bar fill */
+    .progress-bar-container {
+      position: absolute;
+      bottom: 40px;
+      left: 5vw;
+      width: 90vw;
+      height: 1px;
+      background-color: rgba(232, 227, 213, 0.1);
+      z-index: 10;
+    }
+    .progress-bar-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-green);
+      transform: scaleX(0);
+      transform-origin: left;
+      will-change: transform;
+    }
+
+    /* ==========================================================================
+       08. SECTION À PROPOS (PARALLAX HERO + 2-COLUMN DETAIL)
+       ========================================================================== */
+    #about {
+      background-color: var(--color-bg-primary);
+      position: relative;
+    }
+    .about-parallax-container {
+      width: 100%;
+      height: 60vh;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .about-parallax-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 120%; /* larger height to accommodate scrolling translates */
+      z-index: 1;
+      will-change: transform;
+    }
+    .about-parallax-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.2) contrast(1.1) grayscale(0.2);
+    }
+    .about-parallax-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--color-bg-primary) 0%, transparent 20%, transparent 80%, var(--color-bg-primary) 100%);
+      z-index: 2;
+    }
+    .about-parallax-text {
+      position: relative;
+      z-index: 3;
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 5vw, 60px);
+      font-weight: 300;
+      color: var(--color-cream);
+      text-align: center;
+      max-width: 900px;
+      padding: 0 5vw;
+    }
+
+    .about-details {
+      margin-top: 15vh;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .about-text-col {
+      width: 55%;
+    }
+    .about-paragraph {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--color-muted);
+      line-height: 1.8;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    /* Drop caps */
+    .about-paragraph::first-letter {
+      font-family: var(--font-serif);
+      font-size: 80px;
+      font-weight: 300;
+      color: var(--color-green);
+      float: left;
+      line-height: 0.8;
+      margin-right: 15px;
+      margin-top: 5px;
+    }
+
+    .about-stats-col {
+      width: 35%;
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+      padding-left: 5vw;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid rgba(201, 168, 76, 0.3);
+      padding-left: 25px;
+    }
+    .stat-number-wrap {
+      font-family: var(--font-serif);
+      font-size: clamp(54px, 6vw, 72px);
+      font-weight: 300;
+      color: var(--color-cream);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      color: var(--color-muted);
+    }
+
+    /* ==========================================================================
+       09. SECTION TÉMOIGNAGES
+       ========================================================================== */
+    #testimonials {
+      background-color: var(--color-bg-accent);
+      position: relative;
+    }
+    .testimonial-quotes-decor {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-serif);
+      font-size: 150px;
+      font-weight: 400;
+      color: var(--color-green);
+      opacity: 0.15;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .testimonial-container {
+      position: relative;
+      min-height: 40vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      overflow: hidden;
+      padding: 0 5vw;
+    }
+    .testimonial-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-style: italic;
+      font-weight: 300;
+      color: var(--color-cream);
+      line-height: 1.5;
+      margin-bottom: 40px;
+      will-change: transform, opacity;
+    }
+    .testimonial-author {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--color-muted);
+      margin-bottom: 15px;
+      will-change: transform, opacity;
+    }
+    .testimonial-gold-line {
+      width: 60px;
+      height: 1px;
+      background-color: var(--color-gold);
+      margin: 0 auto;
+      will-change: transform, opacity;
+    }
+
+    /* Testimonial Navs */
+    .testimonial-nav {
+      display: flex;
+      justify-content: space-between;
+      position: absolute;
+      top: 50%;
+      left: 5vw;
+      width: 90vw;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .test-nav-btn {
+      background: transparent;
+      border: none;
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--color-muted);
+      cursor: pointer;
+      pointer-events: auto;
+      transition: color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .test-nav-btn:hover {
+      color: var(--color-green-light);
+    }
+    .test-nav-btn span {
+      font-family: var(--font-sans);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.5;
+    }
+
+    /* ==========================================================================
+       10. SECTION PROCESSUS (TIMELINE ACCORDION)
+       ========================================================================== */
+    #processus {
+      background-color: var(--color-bg-primary);
+      position: relative;
+    }
+    .processus-container {
+      position: relative;
+      margin-top: 10vh;
+      padding-left: 50px;
+    }
+    .processus-timeline-line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      background-color: var(--color-gold);
+      opacity: 0.2;
+      transform: scaleY(0);
+      transform-origin: top;
+      will-change: transform;
+    }
+    .processus-step {
+      border-bottom: 1px solid rgba(74, 124, 89, 0.2);
+      border-left: 1px solid transparent;
+      padding: 35px 25px;
+      cursor: pointer;
+      transition: border-left-color 0.4s ease, background-color 0.4s ease;
+      position: relative;
+    }
+    .processus-step.active {
+      border-left-color: var(--color-green);
+      background-color: rgba(18, 22, 18, 0.3);
+    }
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-cream);
+    }
+    .step-header-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    .step-num {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--color-gold);
+    }
+    .step-icon {
+      font-size: 22px;
+      color: var(--color-muted);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .processus-step.active .step-icon {
+      transform: rotate(45deg);
+      color: var(--color-green-light);
+    }
+
+    .step-content {
+      max-height: 0;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: max-height 0.6s cubic-bezier(0.25, 1, 0.5, 1), margin-top 0.6s ease;
+    }
+    .processus-step.active .step-content {
+      max-height: 280px;
+      margin-top: 30px;
+    }
+    .step-text {
+      width: 60%;
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--color-muted);
+      line-height: 1.8;
+    }
+    .step-image {
+      width: 32%;
+      aspect-ratio: 16/10;
+      overflow: hidden;
+    }
+    .step-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ==========================================================================
+       11. SECTION CONTACT (IMMERSIVE FORM)
+       ========================================================================== */
+    #contact {
+      background-color: var(--color-bg-primary);
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      align-items: stretch;
+      position: relative;
+    }
+    .contact-left {
+      width: 50%;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10vh 5vw;
+    }
+    .contact-left-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    .contact-left-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.25) grayscale(0.25);
+    }
+    .contact-left-bg-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to top, var(--color-bg-primary) 0%, transparent 100%);
+      z-index: 2;
+    }
+    .contact-info-container {
+      position: relative;
+      z-index: 3;
+      max-width: 450px;
+    }
+    .contact-info-title {
+      font-family: var(--font-serif);
+      font-size: clamp(32px, 4vw, 56px);
+      line-height: 1.1;
+      margin-bottom: 40px;
+    }
+    .contact-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+    .contact-detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+    }
+    .contact-detail-icon {
+      width: 20px;
+      height: 20px;
+      stroke: var(--color-gold);
+      fill: none;
+      stroke-width: 1.5;
+      margin-top: 5px;
+    }
+    .contact-detail-text h4 {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-muted);
+      margin-bottom: 5px;
+    }
+    .contact-detail-text p {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      color: var(--color-cream);
+      font-weight: 300;
+    }
+
+    .contact-right {
+      width: 50%;
+      background-color: var(--color-bg-secondary);
+      display: flex;
+      align-items: center;
+      padding: 10vh 5vw;
+    }
+    .form-wrapper {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-row {
+      display: flex;
+      gap: 30px;
+    }
+    .form-group {
+      position: relative;
+      margin-bottom: 45px;
+      width: 100%;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(154, 148, 133, 0.4);
+      color: var(--color-cream);
+      padding: 12px 0;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      outline: none;
+      transition: border-bottom-color 0.3s ease;
+    }
+    .form-group select {
+      cursor: pointer;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    /* Select arrow indicator custom */
+    .form-group-select::after {
+      content: '↓';
+      position: absolute;
+      right: 5px;
+      top: 15px;
+      color: var(--color-muted);
+      pointer-events: none;
+      font-size: 14px;
+    }
+    .form-group textarea {
+      height: 120px;
+      resize: none;
+    }
+    
+    .form-group label {
+      position: absolute;
+      left: 0;
+      top: 12px;
+      color: var(--color-muted);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      pointer-events: none;
+      transition: transform 0.3s ease, color 0.3s ease;
+      transform-origin: left;
+    }
+    
+    .form-group.focused label,
+    .form-group.filled label {
+      transform: translateY(-25px) scale(0.85);
+      color: var(--color-green-light);
+    }
+
+    .form-line-active {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background-color: var(--color-green-light);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .form-group.focused .form-line-active {
+      transform: scaleX(1);
+    }
+
+    /* Form submit button */
+    .submit-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 45px;
+      background: transparent;
+      border: 1px solid var(--color-green);
+      color: var(--color-cream);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+      z-index: 1;
+      width: 100%;
+    }
+    .submit-btn-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--color-green);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: -1;
+    }
+    .submit-btn:hover .submit-btn-bg {
+      transform: scaleX(1);
+    }
+    .submit-btn:hover {
+      border-color: var(--color-green-light);
+      color: #ffffff;
+    }
+    .submit-btn-text {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .form-note {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-style: italic;
+      color: var(--color-muted);
+      text-align: center;
+      margin-top: 20px;
+      display: block;
+      letter-spacing: 0.05em;
+    }
+
+    /* ==========================================================================
+       12. FOOTER
+       ========================================================================== */
+    footer {
+      background-color: #070907;
+      padding: 10vh 0 5vh 0;
+      position: relative;
+      border-top: 1px solid rgba(74, 124, 89, 0.2);
+    }
+    .footer-watermark {
+      width: 100%;
+      text-align: center;
+      font-family: var(--font-serif);
+      font-size: 11vw;
+      font-weight: 300;
+      color: var(--color-cream);
+      opacity: 0.03;
+      pointer-events: none;
+      line-height: 1;
+      margin-bottom: 8vh;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr;
+      gap: 50px;
+      position: relative;
+      z-index: 2;
+    }
+    .footer-col h3 {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .footer-slogan {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--color-muted);
+      margin-bottom: 30px;
+      max-width: 300px;
+    }
+    .footer-socials {
+      display: flex;
+      gap: 20px;
+    }
+    .footer-socials a {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid rgba(232, 227, 213, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.3s ease, color 0.3s ease;
+    }
+    .footer-socials svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+    }
+    .footer-socials a:hover {
+      border-color: var(--color-green-light);
+      color: var(--color-green-light);
+    }
+    
+    .footer-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .footer-nav-list a {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-muted);
+      transition: color 0.3s ease;
+    }
+    .footer-nav-list a:hover {
+      color: var(--color-cream);
+    }
+    
+    .footer-contact h4 {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-muted);
+      margin-bottom: 5px;
+    }
+    .footer-contact p {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      color: var(--color-cream);
+      font-weight: 300;
+      margin-bottom: 25px;
+    }
+
+    .footer-bottom {
+      margin-top: 8vh;
+      border-top: 1px solid rgba(232, 227, 213, 0.05);
+      padding-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--color-muted);
+      position: relative;
+      z-index: 2;
+    }
+    .footer-bottom-links {
+      display: flex;
+      gap: 30px;
+    }
+    .footer-bottom-links a {
+      transition: color 0.3s ease;
+    }
+    .footer-bottom-links a:hover {
+      color: var(--color-cream);
+    }
+
+    /* ==========================================================================
+       13. RESPONSIVE DESIGN
+       ========================================================================== */
+    @media (max-width: 1024px) {
+      .hero-title {
+        font-size: 12vw;
+      }
+      .services-container {
+        gap: 12vh;
+      }
+      .service-item, .service-item:nth-child(even) {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+      }
+      .service-text, .service-image-container {
+        width: 100%;
+      }
+      .service-item:nth-child(odd) .service-text,
+      .service-item:nth-child(even) .service-text {
+        padding: 0;
+      }
+      .service-item:nth-child(2),
+      .service-item:nth-child(4),
+      .service-item:nth-child(6) {
+        margin-top: 0;
+      }
+      
+      .about-details {
+        flex-direction: column;
+        gap: 60px;
+      }
+      .about-text-col, .about-stats-col {
+        width: 100%;
+      }
+      .about-stats-col {
+        padding-left: 0;
+      }
+      
+      #contact {
+        flex-direction: column;
+      }
+      .contact-left, .contact-right {
+        width: 100%;
+        min-height: auto;
+      }
+      .contact-left {
+        height: 50vh;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 25px 5vw;
+      }
+      .logo {
+        font-size: 16px;
+      }
+      .nav-links, .nav-cta {
+        display: none;
+      }
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .hero-title {
+        font-size: 14vw;
+      }
+      
+      /* Mobile portfolio horizontal to vertical conversion */
+      .horizontal-container-outer {
+        height: auto;
+      }
+      .horizontal-container-inner {
+        flex-direction: column;
+        padding-left: 0;
+        padding-right: 0;
+        width: 100%;
+      }
+      .portfolio-slide {
+        width: 100%;
+        height: auto;
+        margin-right: 0;
+        margin-bottom: 10vh;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .portfolio-slide-img-wrap {
+        width: 100%;
+        aspect-ratio: 16/10;
+      }
+      .portfolio-slide-info {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 30px;
+      }
+      .portfolio-slide-num {
+        top: -10px;
+        left: 0;
+        font-size: 100px;
+      }
+      .progress-bar-container {
+        display: none;
+      }
+      
+      .processus-timeline-line {
+        display: none;
+      }
+      .processus-container {
+        padding-left: 0;
+      }
+      .step-header-left {
+        gap: 15px;
+      }
+      .step-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      .step-text, .step-image {
+        width: 100%;
+      }
+      
+      .testimonial-nav {
+        display: none;
+      }
+      
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        text-align: center;
+      }
+      .footer-bottom-links {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+      }
+    }
+  </style>
+
+  <!-- GSAP Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       01. PRELOADER SCREEN
+       ========================================================================== */ -->
+  <div id="preloader">
+    <div class="preloader-panel preloader-panel-top"></div>
+    <div class="preloader-panel preloader-panel-bottom"></div>
+    <div class="preloader-logo">V</div>
+  </div>
+
+  <!-- ==========================================================================
+       02. CUSTOM SMOOTH CURSOR
+       ========================================================================== */ -->
+  <div id="custom-cursor"></div>
+
+  <!-- ==========================================================================
+       03. NAVIGATION HEADER
+       ========================================================================== */ -->
+  <header class="magnetic">
+    <a href="#" class="logo">VERDEART</a>
+    <nav class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#portfolio">Réalisations</a>
+      <a href="#about">À Propos</a>
+      <a href="#processus">Notre Vision</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="magnetic">Prendre contact →</a>
+    </div>
+    
+    <button class="menu-toggle" aria-label="Menu">
+      <span class="menu-bar bar-top"></span>
+      <span class="menu-bar bar-bottom"></span>
+    </button>
+  </header>
+
+  <!-- Mobile Fullscreen Menu -->
+  <div class="menu-overlay">
+    <div class="menu-nav">
+      <a href="#" class="menu-link">Accueil</a>
+      <a href="#services" class="menu-link">Services</a>
+      <a href="#portfolio" class="menu-link">Réalisations</a>
+      <a href="#about" class="menu-link">À Propos</a>
+      <a href="#contact" class="menu-link">Contact</a>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       04. HERO SECTION
+       ========================================================================== */ -->
+  <section id="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1558905619-172462fa2024?auto=format&fit=crop&w=1920&q=80" alt="Jardin architectural de luxe" />
+      <div class="hero-bg-overlay"></div>
+    </div>
+    
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="char-wrap"><span class="char-inner">J</span></span>
+        <span class="char-wrap"><span class="char-inner">A</span></span>
+        <span class="char-wrap"><span class="char-inner">R</span></span>
+        <span class="char-wrap"><span class="char-inner">D</span></span>
+        <span class="char-wrap"><span class="char-inner">I</span></span>
+        <span class="char-wrap"><span class="char-inner">N</span></span>
+        <span class="char-wrap"><span class="char-inner">S</span></span>
+      </h1>
+      <div class="hero-tagline-container">
+        <div class="hero-tagline" data-text="La nature, sculptée.">La nature, sculptée.</div>
+      </div>
+    </div>
+
+    <div class="hero-counter">01 / 06</div>
+    
+    <div class="hero-info">
+      Créateurs d'espaces vivants depuis 2008.<br>Paris & Île-de-France.
+    </div>
+    
+    <div class="hero-scroll-indicator">
+      <div class="scroll-line-container">
+        <div class="scroll-line-fill"></div>
+      </div>
+      <span>SCROLL</span>
+    </div>
+    
+    <div class="hero-cta">
+      <a href="#portfolio" class="circle-cta magnetic" data-cursor-text="EXPLORER">
+        <div class="circle-cta-bg"></div>
+        <div class="circle-cta-border"></div>
+        <div class="circle-cta-arrow">→</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       05. INFINITE MARQUEE STRIP
+       ========================================================================== */ -->
+  <div class="marquee-container">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        CONCEPTION ◆ CRÉATION ◆ ENTRETIEN ◆ BASSINS ◆ TERRASSES ◆ ÉCLAIRAGE ◆ CONCEPTION ◆ CRÉATION ◆ ENTRETIEN ◆ BASSINS ◆ TERRASSES ◆ ÉCLAIRAGE ◆
+      </div>
+      <div class="marquee-content">
+        CONCEPTION ◆ CRÉATION ◆ ENTRETIEN ◆ BASSINS ◆ TERRASSES ◆ ÉCLAIRAGE ◆ CONCEPTION ◆ CRÉATION ◆ ENTRETIEN ◆ BASSINS ◆ TERRASSES ◆ ÉCLAIRAGE ◆
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       06. SECTION SERVICES (MAGAZINE LAYOUT)
+       ========================================================================== */ -->
+  <section id="services" class="section-spacing">
+    <div class="bg-number" style="right: 5vw; top: 10%;">02</div>
+    <div class="container">
+      <div class="services-intro">
+        <span class="section-label">NOS COMPÉTENCES</span>
+        <h2 class="section-title">
+          <span class="title-line"><span>SCULPTER LE VIVANT,</span></span>
+          <span class="title-line"><span>DESSINER L'ESPACE.</span></span>
+        </h2>
+      </div>
+
+      <div class="services-container">
+        <!-- Service 1 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">01</span>
+            <h3 class="service-title">Conception de Jardins</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">L'art d'esquisser des espaces qui respirent. Nous imaginons des structures végétales et minérales uniques qui dialoguent de manière fluide avec l'architecture de votre demeure.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="CONCEVOIR">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=800&q=80" alt="Conception de jardin minimaliste de luxe" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Conception de Jardins</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">02</span>
+            <h3 class="service-title">Terrasses Végétalisées</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">Création de véritables oasis suspendues au-dessus du tumulte urbain. Conception sur-mesure pour appartements d'exception, penthouses et toits-terrasses privatifs.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="AMÉNAGER">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80" alt="Terrasse de luxe végétalisée" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Terrasses Végétalisées</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">03</span>
+            <h3 class="service-title">Bassins & Points d'Eau</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">L'eau comme miroir d'art. Intégration de bassins biologiques, cascades géométriques et miroirs d'eau épurés apportant apaisement et dynamisme à vos extérieurs.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="CONTEMPLER">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=800&q=80" alt="Bassin géométrique minimaliste" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Bassins & Miroirs d'Eau</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">04</span>
+            <h3 class="service-title">Éclairage Paysager</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">Révéler la splendeur du paysage à la tombée du jour. Scénographies lumineuses discrètes mettant en relief les silhouettes des arbres et structurant les chemins.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="ILLUMINER">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=800&q=80" alt="Éclairage architectural extérieur" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Éclairage Paysager</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">05</span>
+            <h3 class="service-title">Entretien Premium</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">Préserver la pureté des formes et la vitalité des végétaux. Un service de maintenance haut de gamme, discret et hautement qualifié pour un suivi patrimonial de votre jardin.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="PRÉSERVER">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1592417817098-8f3d6eb19675?auto=format&fit=crop&w=800&q=80" alt="Taille précise de plantes" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Entretien Premium</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-item">
+          <div class="service-text">
+            <span class="service-dec-num">06</span>
+            <h3 class="service-title">Jardins Japonais & Minimalistes</h3>
+            <div class="service-gold-line"></div>
+            <p class="service-desc">Le raffinement absolu de l'équilibre zen. Des réalisations alliant rigueur minérale, mousse de velours, et arbres sculptés en nuage pour une contemplation totale.</p>
+            <a href="#contact" class="service-link">Découvrir <span>→</span></a>
+          </div>
+          <div class="service-image-container" data-cursor-text="SÉRÉNITÉ">
+            <div class="reveal-wrapper">
+              <div class="reveal-overlay"></div>
+              <img class="reveal-image" src="https://images.unsplash.com/photo-1508873696983-2df519f0397e?auto=format&fit=crop&w=800&q=80" alt="Jardin japonais et pont en pierre" loading="lazy" width="800" height="1066">
+            </div>
+            <div class="service-img-overlay">
+              <div class="service-img-overlay-text">Zen & Minimalisme</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section separator -->
+  <div class="animated-line"></div>
+
+  <!-- ==========================================================================
+       07. SECTION PORTFOLIO (IMMERSIVE HORIZONTAL SCROLL)
+       ========================================================================== */ -->
+  <section id="portfolio">
+    <div class="portfolio-intro">
+      <span class="section-label">PORTFOLIO</span>
+      <h2 class="section-title">
+        <span class="title-line"><span>ŒUVRES VIVANTES.</span></span>
+      </h2>
+      <div class="portfolio-hint-container">
+        <div class="portfolio-hint-arrow">→</div>
+        <div class="portfolio-hint-text">Défilez horizontalement</div>
+      </div>
+    </div>
+
+    <div class="horizontal-container-outer">
+      <div class="horizontal-container-inner">
+        <!-- Slide 1 -->
+        <div class="portfolio-slide">
+          <div class="portfolio-slide-img-wrap" data-cursor-text="VOIR">
+            <img src="https://images.unsplash.com/photo-1508873696983-2df519f0397e?auto=format&fit=crop&w=1200&q=80" alt="Villa Minérale" loading="lazy">
+          </div>
+          <div class="portfolio-slide-info">
+            <span class="portfolio-slide-num">01</span>
+            <h3 class="portfolio-slide-title">La Villa Minérale</h3>
+            <p class="portfolio-slide-desc">Création d'un jardin d'inspiration Zen où le schiste noir feuilleté dialogue avec la délicatesse des érables du Japon pour créer un havre contemplatif.</p>
+            <div class="portfolio-slide-meta">
+              <span><strong>Lieu</strong><br>Neuilly-sur-Seine</span>
+              <span><strong>Superficie</strong><br>450 m²</span>
+              <span><strong>Année</strong><br>2024</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="portfolio-slide">
+          <div class="portfolio-slide-img-wrap" data-cursor-text="VOIR">
+            <img src="https://images.unsplash.com/photo-1534850336045-c6c6d287f89e?auto=format&fit=crop&w=1200&q=80" alt="Penthouse Suspendu" loading="lazy">
+          </div>
+          <div class="portfolio-slide-info">
+            <span class="portfolio-slide-num">02</span>
+            <h3 class="portfolio-slide-title">Le Penthouse Suspendu</h3>
+            <p class="portfolio-slide-desc">Conception d'une structure en bois brûlé japonais Shousugi-ban sur un toit-terrasse parisien face à la Seine, complétée par un rideau de graminées mouvantes.</p>
+            <div class="portfolio-slide-meta">
+              <span><strong>Lieu</strong><br>Paris XVI</span>
+              <span><strong>Superficie</strong><br>180 m²</span>
+              <span><strong>Année</strong><br>2023</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="portfolio-slide">
+          <div class="portfolio-slide-img-wrap" data-cursor-text="VOIR">
+            <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1200&q=80" alt="Domaine de Versailles" loading="lazy">
+          </div>
+          <div class="portfolio-slide-info">
+            <span class="portfolio-slide-num">03</span>
+            <h3 class="portfolio-slide-title">Parterres Contemporains</h3>
+            <p class="portfolio-slide-desc">Réinterprétation contemporaine de tracés classiques pour une grande demeure versaillaise historique. Rigueur géométrique et touches florales sauvages.</p>
+            <div class="portfolio-slide-meta">
+              <span><strong>Lieu</strong><br>Versailles</span>
+              <span><strong>Superficie</strong><br>2 500 m²</span>
+              <span><strong>Année</strong><br>2023</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4 -->
+        <div class="portfolio-slide">
+          <div class="portfolio-slide-img-wrap" data-cursor-text="VOIR">
+            <img src="https://images.unsplash.com/photo-1576016770956-debb63d90029?auto=format&fit=crop&w=1200&q=80" alt="L'Écrin d'Eau" loading="lazy">
+          </div>
+          <div class="portfolio-slide-info">
+            <span class="portfolio-slide-num">04</span>
+            <h3 class="portfolio-slide-title">L'Écrin d'Eau</h3>
+            <p class="portfolio-slide-desc">Bassin biologique miroir inséré au cœur d'un boisement de chênes existants, encadré de passerelles minimalistes en acier brut et de fougères arborescentes.</p>
+            <div class="portfolio-slide-meta">
+              <span><strong>Lieu</strong><br>Boulogne</span>
+              <span><strong>Superficie</strong><br>300 m²</span>
+              <span><strong>Année</strong><br>2025</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 5 -->
+        <div class="portfolio-slide">
+          <div class="portfolio-slide-img-wrap" data-cursor-text="VOIR">
+            <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80" alt="Le Jardin Cubiste" loading="lazy">
+          </div>
+          <div class="portfolio-slide-info">
+            <span class="portfolio-slide-num">05</span>
+            <h3 class="portfolio-slide-title">Le Jardin Cubiste</h3>
+            <p class="portfolio-slide-desc">Jeux de terrasses multi-niveaux en béton brut texturé, accueillant des sculptures minérales et une sélection de pins taillés en niwaki.</p>
+            <div class="portfolio-slide-meta">
+              <span><strong>Lieu</strong><br>Saint-Cloud</span>
+              <span><strong>Superficie</strong><br>600 m²</span>
+              <span><strong>Année</strong><br>2024</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress indicator bar -->
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill"></div>
+    </div>
+  </section>
+
+  <!-- Separator line -->
+  <div class="animated-line"></div>
+
+  <!-- ==========================================================================
+       08. SECTION À PROPOS (STORYTELLING & PARALLAX)
+       ========================================================================== */ -->
+  <section id="about" class="section-spacing">
+    <div class="bg-number" style="left: 5vw; top: 8%;">04</div>
+    <div class="about-parallax-container">
+      <div class="about-parallax-img">
+        <img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1920&q=80" alt="Grand parc forestier à l'aube" loading="lazy">
+      </div>
+      <div class="about-parallax-overlay"></div>
+      <h3 class="about-parallax-text">« 15 ans à sculpter la nature. »</h3>
+    </div>
+
+    <div class="container">
+      <div class="about-details">
+        <div class="about-text-col">
+          <p class="about-paragraph">VerdeArt Paysage naît d'une volonté simple mais radicale : transcender le concept traditionnel de jardin pour en faire une authentique œuvre d'art habitable. Fondée par Arthur de Vigny, architecte paysagiste de formation, notre agence crée des dialogues géométriques et poétiques entre la pierre, l'eau et le monde végétal.</p>
+          <p class="about-paragraph">Nous concevons chaque espace vert comme une sculpture vivante. Nous n'adoptons aucune approche standardisée : chaque cour, chaque terrasse suspendue et chaque domaine forestier est une partition unique, composée en harmonie avec l'écosystème local et le caractère unique du lieu.</p>
+          <p class="about-paragraph">Pour nos clients exigeants, promoteurs d'exception et architectes de renom, nous façonnons des paysages qui se patinent avec grâce au fil des saisons. De l'analyse rigoureuse des sols à la pose minutieuse de blocs de pierre brute, notre recherche de la perfection géométrique et structurelle demeure sans compromis.</p>
+        </div>
+        
+        <div class="about-stats-col">
+          <div class="stat-item">
+            <div class="stat-number-wrap">
+              <span class="stat-count" data-target="15">0</span><span class="stat-suffix"> ans</span>
+            </div>
+            <div class="stat-label">D'expérience artistique</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number-wrap">
+              <span class="stat-count" data-target="400">0</span><span class="stat-suffix">+</span>
+            </div>
+            <div class="stat-label">Jardins et terrasses sculptés</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number-wrap">
+              <span class="stat-count" data-target="98">0</span><span class="stat-suffix">%</span>
+            </div>
+            <div class="stat-label">De clients pleinement inspirés</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Separator line -->
+  <div class="animated-line"></div>
+
+  <!-- ==========================================================================
+       09. SECTION TÉMOIGNAGES
+       ========================================================================== */ -->
+  <section id="testimonials" class="section-spacing">
+    <div class="testimonial-quotes-decor">“</div>
+    <div class="testimonial-container">
+      <div>
+        <p class="testimonial-quote">"Un projet d'exception. VerdeArt a su capter l'essence minérale de notre demeure pour en faire un prolongement naturel."</p>
+        <div class="testimonial-author">Jean-Pierre M. — Villa d'architecte, Hauts-de-Seine</div>
+        <div class="testimonial-gold-line"></div>
+      </div>
+    </div>
+    
+    <div class="testimonial-nav">
+      <button class="test-nav-btn test-nav-prev" aria-label="Témoignage précédent">
+        <span>Précédent</span>
+        <span class="prev-index-num">03</span>
+      </button>
+      <button class="test-nav-btn test-nav-next" aria-label="Témoignage suivant">
+        <span>Suivant</span>
+        <span class="next-index-num">02</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Separator line -->
+  <div class="animated-line"></div>
+
+  <!-- ==========================================================================
+       10. SECTION PROCESSUS (TIMELINE ACCORDION)
+       ========================================================================== */ -->
+  <section id="processus" class="section-spacing">
+    <div class="bg-number" style="right: 5vw; top: 12%;">05</div>
+    <div class="container">
+      <div class="services-intro">
+        <span class="section-label">NOTRE DÉMARCHE</span>
+        <h2 class="section-title">
+          <span class="title-line"><span>LA GENÈSE D'UN</span></span>
+          <span class="title-line"><span>ESPACE UNIQUE.</span></span>
+        </h2>
+      </div>
+
+      <div class="processus-container">
+        <div class="processus-timeline-line"></div>
+        
+        <!-- Step 1 -->
+        <div class="processus-step active" data-step="0">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">01</span>
+              <span>Rencontre & Analyse</span>
+            </div>
+            <span class="step-icon">+</span>
+          </div>
+          <div class="step-content">
+            <p class="step-text">Nous prenons le temps d'échanger sur vos aspirations de vie et la philosophie de votre projet. Nous réalisons une étude complète du terrain : topographie, course du soleil, typologie des sols et vents dominants pour définir les fondations de notre composition paysagère.</p>
+            <div class="step-image">
+              <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80" alt="Analyse du site paysager" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="processus-step" data-step="1">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">02</span>
+              <span>Conception & Maquette</span>
+            </div>
+            <span class="step-icon">+</span>
+          </div>
+          <div class="step-content">
+            <p class="step-text">Nos directeurs artistiques traduisent les intentions en plans de masse, croquis éditoriaux et modélisations tridimensionnelles. Nous sélectionnons avec rigueur les essences végétales rares et les matériaux nobles (ardoises, granites, essences de bois durables) présentés dans un coffret d'échantillons physiques.</p>
+            <div class="step-image">
+              <img src="https://images.unsplash.com/photo-1501183007986-d0d080b147f9?auto=format&fit=crop&w=600&q=80" alt="Conception de plans" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="processus-step" data-step="2">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">03</span>
+              <span>Réalisation & Sculpture</span>
+            </div>
+            <span class="step-icon">+</span>
+          </div>
+          <div class="step-content">
+            <p class="step-text">Nos compagnons paysagistes, maçons d'art et hydrauliciens donnent vie au projet. Nous coordonnons chaque étape avec une exigence absolue : terrassements précis, installation des circuits hydrauliques, plantation délicate de sujets forestiers majeurs, et maçonnerie paysagère.</p>
+            <div class="step-image">
+              <img src="https://images.unsplash.com/photo-1534710962475-2a4aa35db99f?auto=format&fit=crop&w=600&q=80" alt="Réalisation sur chantier" loading="lazy">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="processus-step" data-step="3">
+          <div class="step-header">
+            <div class="step-header-left">
+              <span class="step-num">04</span>
+              <span>Suivi & Évolution</span>
+            </div>
+            <span class="step-icon">+</span>
+          </div>
+          <div class="step-content">
+            <p class="step-text">Un jardin est une création en constante évolution. Nous vous accompagnons à travers un plan d'entretien haut de gamme et saisonnier. Nos experts veillent à la croissance harmonieuse des végétaux et à la pérennité structurelle des installations minérales et d'eau.</p>
+            <div class="step-image">
+              <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80" alt="Entretien et suivi du jardin" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Separator line -->
+  <div class="animated-line"></div>
+
+  <!-- ==========================================================================
+       11. SECTION CONTACT (IMMERSIVE FORM)
+       ========================================================================== */ -->
+  <section id="contact">
+    <div class="contact-left">
+      <div class="contact-left-bg">
+        <img src="https://images.unsplash.com/photo-1584467541268-b040f83be3fd?auto=format&fit=crop&w=1000&q=80" alt="Bassin de villa moderne en béton et verdure" loading="lazy">
+        <div class="contact-left-bg-overlay"></div>
+      </div>
+      
+      <div class="contact-info-container">
+        <h2 class="contact-info-title">Façonnons votre futur horizon.</h2>
+        
+        <div class="contact-details-list">
+          <div class="contact-detail-item">
+            <svg class="contact-detail-icon" viewBox="0 0 24 24">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <div class="contact-detail-text">
+              <h4>ADRESSE STUDIO</h4>
+              <p>42 Avenue Montaigne, 75008 Paris</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-item">
+            <svg class="contact-detail-icon" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <div class="contact-detail-text">
+              <h4>TÉLÉPHONE</h4>
+              <p>+33 (0)1 42 68 53 90</p>
+            </div>
+          </div>
+
+          <div class="contact-detail-item">
+            <svg class="contact-detail-icon" viewBox="0 0 24 24">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <div class="contact-detail-text">
+              <h4>EMAIL</h4>
+              <p>contact@verdeart-paysage.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="contact-right">
+      <div class="form-wrapper">
+        <form id="contact-form" autocomplete="off" onsubmit="event.preventDefault(); alert('Votre demande a bien été transmise à notre directeur de création.');">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" id="firstname" required placeholder=" ">
+              <label for="firstname">Prénom</label>
+              <div class="form-line-active"></div>
+            </div>
+            
+            <div class="form-group">
+              <input type="text" id="lastname" required placeholder=" ">
+              <label for="lastname">Nom</label>
+              <div class="form-line-active"></div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="email" id="email" required placeholder=" ">
+            <label for="email">Adresse Email</label>
+            <div class="form-line-active"></div>
+          </div>
+
+          <div class="form-group">
+            <input type="tel" id="phone" placeholder=" ">
+            <label for="phone">Téléphone (Optionnel)</label>
+            <div class="form-line-active"></div>
+          </div>
+
+          <div class="form-group form-group-select">
+            <select id="project-type" required>
+              <option value="" disabled selected hidden></option>
+              <option value="jardin">Création de Jardin d'Exception</option>
+              <option value="terrasse">Terrasse Végétalisée Haut de Gamme</option>
+              <option value="bassin">Bassin Miroir & Point d'Eau</option>
+              <option value="eclairage">Scénographie Lumineuse Extérieure</option>
+              <option value="entretien">Entretien Patrimonial Régulier</option>
+              <option value="autre">Autre Projet sur-mesure</option>
+            </select>
+            <label for="project-type">Type de Projet</label>
+            <div class="form-line-active"></div>
+          </div>
+
+          <div class="form-group">
+            <textarea id="message" required placeholder=" "></textarea>
+            <label for="message">Décrivez votre vision paysagère</label>
+            <div class="form-line-active"></div>
+          </div>
+
+          <button type="submit" class="submit-btn magnetic" data-cursor-text="ENVOYER">
+            <span class="submit-btn-bg"></span>
+            <span class="submit-btn-text">Envoyer ma demande →</span>
+          </button>
+          
+          <span class="form-note">Étude de dossier sous 24h · Premier déplacement offert</span>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       12. FOOTER
+       ========================================================================== */ -->
+  <footer>
+    <div class="footer-watermark">VERDEART</div>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h3>VerdeArt Paysage</h3>
+          <p class="footer-slogan">« La nature, sculptée. » Architectes de l'extérieur, concepteurs d'œuvres d'art végétales pérennes.</p>
+          <div class="footer-socials">
+            <a href="#" aria-label="Instagram" class="magnetic">
+              <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" aria-label="Pinterest" class="magnetic">
+              <svg viewBox="0 0 24 24"><path d="M8 22a9 9 0 0 1-1.91-8.7A5 5 0 0 1 11 9h1a5 5 0 0 1 5 5 9 9 0 1 1-9 8zm3-11a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+            </a>
+            <a href="#" aria-label="LinkedIn" class="magnetic">
+              <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <div class="footer-col">
+          <h3>Navigation</h3>
+          <ul class="footer-nav-list">
+            <li><a href="#">Accueil</a></li>
+            <li><a href="#services">Nos Services</a></li>
+            <li><a href="#portfolio">Réalisations</a></li>
+            <li><a href="#about">Notre Histoire</a></li>
+            <li><a href="#processus">Notre Vision</a></li>
+            <li><a href="#contact">Prendre Contact</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col footer-contact">
+          <h3>Notre Studio</h3>
+          
+          <h4>CONTACT CLIENTS</h4>
+          <p>concierge@verdeart-paysage.com<br>+33 (0)1 42 68 53 90</p>
+          
+          <h4>COLLABORATIONS ARCHITECTES</h4>
+          <p>pro@verdeart-paysage.com<br>+33 (0)1 42 68 53 95</p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2026 VerdeArt Paysage. Tous droits réservés.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Mentions Légales</a>
+          <a href="#">Politique de Confidentialité</a>
+          <span>Fait avec soin en France 🌿</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       14. ANIMATIONS & INTERACTIONS JS (GSAP & SCROLLTRIGGER)
+       ========================================================================== */ -->
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // ==========================================
+      // A. ACCESSIBILITY / REDUCED MOTION CHECK
+      // ==========================================
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        document.body.classList.add('reduced-motion');
+        const preloader = document.getElementById('preloader');
+        if (preloader) preloader.remove();
+        
+        // Expose elements instantly
+        gsap.set('.char-inner, .title-line span, .reveal-image, .animated-line, .stat-count, .hero-tagline', { 
+          transform: 'none', 
+          opacity: 1, 
+          scale: 1 
+        });
+        
+        // Accordion simple behavior
+        setupProcessusAccordion(true);
+        setupTestimonials(true);
+        setupMobileMenu();
+        setupContactInputs();
+        return; // Stop running timeline sequences
+      }
+
+      // ==========================================
+      // B. PRELOADER & HERO ENTRANCE TIMELINE
+      // ==========================================
+      const preloaderTl = gsap.timeline({
+        onComplete: () => {
+          const loader = document.getElementById('preloader');
+          if (loader) loader.remove();
+          // Initialize animations after preloader leaves
+          initAnimationsAfterLoader();
+        }
+      });
+
+      preloaderTl
+        .to('.preloader-logo', {
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.out"
+        })
+        .to('.preloader-logo', {
+          opacity: 0,
+          duration: 0.5,
+          ease: "power2.in",
+          delay: 0.4
+        })
+        .to('.preloader-panel-top', {
+          yPercent: -100,
+          duration: 1.2,
+          ease: "power3.inOut"
+        })
+        .to('.preloader-panel-bottom', {
+          yPercent: 100,
+          duration: 1.2,
+          ease: "power3.inOut"
+        }, "<")
+        .to('.hero-title .char-inner', {
+          y: "0%",
+          duration: 1.2,
+          stagger: 0.08,
+          ease: "power3.out"
+        }, "-=0.8")
+        .to('.hero-tagline', {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out"
+        }, "-=0.4");
+
+
+      function initAnimationsAfterLoader() {
+        // ==========================================
+        // C. CUSTOM SMOOTH CURSOR (DESKTOP ONLY)
+        // ==========================================
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const cursor = document.getElementById('custom-cursor');
+        
+        if (isTouchDevice) {
+          cursor.style.display = 'none';
+        } else {
+          let mouse = { x: -100, y: -100 };
+          let cursorPos = { x: -100, y: -100 };
+          let cursorScale = 1;
+
+          window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+          });
+
+          // Lerp loop
+          function animateCursor() {
+            const dt = 0.15; // smooth lag factor
+            cursorPos.x += (mouse.x - cursorPos.x) * dt;
+            cursorPos.y += (mouse.y - cursorPos.y) * dt;
+            
+            cursor.style.transform = `translate3d(${cursorPos.x}px, ${cursorPos.y}px, 0) translate(-50%, -50%) scale(${cursorScale})`;
+            requestAnimationFrame(animateCursor);
+          }
+          animateCursor();
+
+          // Active Click Effect
+          window.addEventListener('mousedown', () => cursorScale = 0.8);
+          window.addEventListener('mouseup', () => cursorScale = 1);
+
+          // Interaction triggers
+          const interactives = document.querySelectorAll('a, button, .circle-cta, .service-image-container, .portfolio-slide-img-wrap, .processus-step');
+          interactives.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+              cursor.classList.add('hovered');
+              const hoverText = el.getAttribute('data-cursor-text') || 'EXPLORER';
+              cursor.setAttribute('data-text', hoverText);
+            });
+            el.addEventListener('mouseleave', () => {
+              cursor.classList.remove('hovered');
+              cursor.removeAttribute('data-text');
+            });
+          });
+        }
+
+        // ==========================================
+        // D. TEXT GLITCH (PERIODIC RGB SHIFT)
+        // ==========================================
+        const tagline = document.querySelector('.hero-tagline');
+        setInterval(() => {
+          tagline.classList.add('glitch-active');
+          setTimeout(() => {
+            tagline.classList.remove('glitch-active');
+          }, 150);
+        }, 5000);
+
+        // ==========================================
+        // E. MAGNETIC ELEMENTS
+        // ==========================================
+        if (!isTouchDevice) {
+          const magnetics = document.querySelectorAll('.magnetic');
+          magnetics.forEach(el => {
+            el.addEventListener('mousemove', (e) => {
+              const rect = el.getBoundingClientRect();
+              const elX = rect.left + rect.width / 2;
+              const elY = rect.top + rect.height / 2;
+              
+              const pullX = (e.clientX - elX) * 0.3; // magnetic intensity
+              const pullY = (e.clientY - elY) * 0.3;
+              
+              // Cap at 15px max movement
+              const angle = Math.atan2(pullY, pullX);
+              const dist = Math.min(Math.hypot(pullX, pullY), 15);
+              const targetX = Math.cos(angle) * dist;
+              const targetY = Math.sin(angle) * dist;
+              
+              gsap.to(el, {
+                x: targetX,
+                y: targetY,
+                duration: 0.3,
+                ease: "power2.out"
+              });
+            });
+            
+            el.addEventListener('mouseleave', () => {
+              gsap.to(el, {
+                x: 0,
+                y: 0,
+                duration: 0.5,
+                ease: "power3.out"
+              });
+            });
+          });
+        }
+
+        // ==========================================
+        // F. HERO BACKGROUND PARALLAX
+        // ==========================================
+        gsap.to('.hero-bg img', {
+          yPercent: 20,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+
+        // ==========================================
+        // G. SPLIT SECTION TITLES
+        // ==========================================
+        gsap.utils.toArray('.section-title').forEach(title => {
+          gsap.to(title.querySelectorAll('.title-line span'), {
+            y: "0%",
+            duration: 1.0,
+            stagger: 0.12,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: title,
+              start: "top 85%",
+              toggleActions: "play none none none"
+            }
+          });
+        });
+
+        // ==========================================
+        // H. IMAGE REVEAL EFFECTS
+        // ==========================================
+        gsap.utils.toArray('.reveal-wrapper').forEach(wrapper => {
+          const overlay = wrapper.querySelector('.reveal-overlay');
+          const img = wrapper.querySelector('.reveal-image');
+          
+          const revealTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: wrapper,
+              start: "top 85%",
+              toggleActions: "play none none none"
+            }
+          });
+          
+          revealTl
+            .to(overlay, {
+              scaleX: 0,
+              duration: 1.2,
+              ease: "power3.inOut"
+            })
+            .to(img, {
+              scale: 1,
+              duration: 1.2,
+              ease: "power3.out"
+            }, 0);
+        });
+
+        // ==========================================
+        // I. HORIZONTAL SEPARATORS
+        // ==========================================
+        gsap.utils.toArray('.animated-line').forEach(line => {
+          gsap.to(line, {
+            scaleX: 1,
+            duration: 1.4,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: line,
+              start: "top 90%",
+              toggleActions: "play none none none"
+            }
+          });
+        });
+
+        // ==========================================
+        // J. PORTFOLIO HORIZONTAL PINNED SCROLL
+        // ==========================================
+        const horizontalContainer = document.querySelector('.horizontal-container-inner');
+        const slides = gsap.utils.toArray('.portfolio-slide');
+        
+        if (window.innerWidth > 768 && horizontalContainer) {
+          // Horizontal scrolling transition
+          const scrollTween = gsap.to(horizontalContainer, {
+            x: () => -(horizontalContainer.scrollWidth - window.innerWidth),
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#portfolio",
+              pin: true,
+              scrub: 1,
+              start: "top top",
+              end: () => "+=" + (horizontalContainer.scrollWidth - window.innerWidth),
+              invalidateOnRefresh: true
+            }
+          });
+
+          // Horizontal slide progress bar filling
+          gsap.to('.progress-bar-fill', {
+            scaleX: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#portfolio",
+              start: "top top",
+              end: () => "+=" + (horizontalContainer.scrollWidth - window.innerWidth),
+              scrub: true
+            }
+          });
+
+          // Image Parallax translation Y (in opposite direction of scroll)
+          gsap.utils.toArray('.portfolio-slide-img-wrap img').forEach(img => {
+            gsap.fromTo(img, {
+              xPercent: -8
+            }, {
+              xPercent: 8,
+              ease: "none",
+              scrollTrigger: {
+                trigger: img.closest('.portfolio-slide'),
+                containerAnimation: scrollTween,
+                start: "left right",
+                end: "right left",
+                scrub: true
+              }
+            });
+          });
+        }
+
+        // ==========================================
+        // K. STORYTELLING PARALLAX IMAGE
+        // ==========================================
+        gsap.to('.about-parallax-img', {
+          yPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".about-parallax-container",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true
+          }
+        });
+
+        // ==========================================
+        // L. STATS COUNTER ANIMATIONS
+        // ==========================================
+        gsap.utils.toArray('.stat-count').forEach(stat => {
+          const target = parseInt(stat.getAttribute('data-target'));
+          const counterObj = { value: 0 };
+          
+          gsap.to(counterObj, {
+            value: target,
+            duration: 2.0,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: stat,
+              start: "top 85%",
+              toggleActions: "play none none none"
+            },
+            onUpdate: () => {
+              stat.textContent = Math.floor(counterObj.value);
+            }
+          });
+        });
+
+        // ==========================================
+        // M. ACCORDION AUTO-PLAY TIMELINE
+        // ==========================================
+        setupProcessusAccordion(false);
+
+        // ==========================================
+        // N. TESTIMONIALS SLIDER
+        // ==========================================
+        setupTestimonials(false);
+      }
+
+      // ==========================================
+      // GLOBAL SCROLL ACTION: NAVBAR Blur/Background
+      // ==========================================
+      window.addEventListener('scroll', () => {
+        const header = document.querySelector('header');
+        if (window.scrollY > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+
+      // Initialize non-GSAP visual handlers
+      setupMobileMenu();
+      setupContactInputs();
+    });
+
+    // ==========================================================================
+    // MENU MOBILE TOGGLING
+    // ==========================================================================
+    function setupMobileMenu() {
+      const menuToggle = document.querySelector('.menu-toggle');
+      const menuOverlay = document.querySelector('.menu-overlay');
+      const menuLinks = document.querySelectorAll('.menu-link');
+      let isMenuOpen = false;
+
+      menuToggle.addEventListener('click', () => {
+        isMenuOpen = !isMenuOpen;
+        menuToggle.classList.toggle('active');
+        menuOverlay.classList.toggle('open');
+        
+        if (isMenuOpen) {
+          gsap.to(menuLinks, {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            stagger: 0.08,
+            ease: "power3.out",
+            delay: 0.25
+          });
+        } else {
+          gsap.to(menuLinks, {
+            opacity: 0,
+            y: 40,
+            duration: 0.3,
+            stagger: 0.05,
+            ease: "power3.in"
+          });
+        }
+      });
+      
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          isMenuOpen = false;
+          menuToggle.classList.remove('active');
+          menuOverlay.classList.remove('open');
+          gsap.set(menuLinks, { opacity: 0, y: 40 });
+        });
+      });
+    }
+
+    // ==========================================================================
+    // TIMELINE ACCORDION HANDLER
+    // ==========================================================================
+    function setupProcessusAccordion(reducedMotion) {
+      const steps = document.querySelectorAll('.processus-step');
+      const timelineLine = document.querySelector('.processus-timeline-line');
+      let currentIndex = 0;
+      let autoplayInterval;
+
+      // Animate timeline line down on entering section
+      if (!reducedMotion) {
+        gsap.to(timelineLine, {
+          scaleY: 1,
+          duration: 1.5,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".processus-container",
+            start: "top 80%"
+          }
+        });
+      }
+
+      function showStep(index) {
+        steps.forEach((step, idx) => {
+          if (idx === index) {
+            step.classList.add('active');
+          } else {
+            step.classList.remove('active');
+          }
+        });
+      }
+
+      // Autoplay cycle through steps
+      function startAutoplay() {
+        showStep(currentIndex);
+        autoplayInterval = setInterval(() => {
+          currentIndex = (currentIndex + 1) % steps.length;
+          showStep(currentIndex);
+        }, 2800);
+      }
+
+      if (!reducedMotion) {
+        ScrollTrigger.create({
+          trigger: "#processus",
+          start: "top 60%",
+          onEnter: () => startAutoplay(),
+          onLeaveBack: () => clearInterval(autoplayInterval)
+        });
+      } else {
+        showStep(0); // static initial
+      }
+
+      // Stop autoplay on manual interaction click
+      steps.forEach((step, index) => {
+        step.addEventListener('click', () => {
+          clearInterval(autoplayInterval);
+          currentIndex = index;
+          showStep(currentIndex);
+        });
+      });
+    }
+
+    // ==========================================================================
+    // TESTIMONIALS SLIDER HANDLER
+    // ==========================================================================
+    function setupTestimonials(reducedMotion) {
+      const testimonials = [
+        {
+          quote: "Un projet d'exception. VerdeArt a su capter l'essence minérale de notre demeure pour en faire un prolongement naturel.",
+          author: "Jean-Pierre M. — Villa d'architecte, Hauts-de-Seine"
+        },
+        {
+          quote: "Leur approche artistique dépasse largement le simple paysagisme. Notre terrasse végétalisée est devenue une œuvre d'art vivante.",
+          author: "Hélène R. — Penthouse, Paris VII"
+        },
+        {
+          quote: "Un professionnalisme rare. De l'esquisse initiale à l'entretien de nos arbres centenaires, tout est mené avec un soin millimétré.",
+          author: "Marc A. — Domaine Historique, Versailles"
+        }
+      ];
+
+      let activeIndex = 0;
+      const prevBtn = document.querySelector('.test-nav-prev');
+      const nextBtn = document.querySelector('.test-nav-next');
+      const quoteEl = document.querySelector('.testimonial-quote');
+      const authorEl = document.querySelector('.testimonial-author');
+      
+      const prevIndexNum = document.querySelector('.prev-index-num');
+      const nextIndexNum = document.querySelector('.next-index-num');
+
+      function updateNavNumbers() {
+        const prevIdx = (activeIndex - 1 + testimonials.length) % testimonials.length;
+        const nextIdx = (activeIndex + 1) % testimonials.length;
+        prevIndexNum.textContent = String(prevIdx + 1).padStart(2, '0');
+        nextIndexNum.textContent = String(nextIdx + 1).padStart(2, '0');
+      }
+
+      function slideTestimonial(targetIndex, direction) {
+        if (reducedMotion) {
+          activeIndex = targetIndex;
+          quoteEl.textContent = `"${testimonials[activeIndex].quote}"`;
+          authorEl.textContent = testimonials[activeIndex].author;
+          updateNavNumbers();
+          return;
+        }
+
+        const tl = gsap.timeline();
+        const moveDistance = direction === 'next' ? -40 : 40;
+
+        // Fade out
+        tl.to([quoteEl, authorEl, '.testimonial-gold-line'], {
+          opacity: 0,
+          x: moveDistance,
+          duration: 0.25,
+          ease: "power2.in",
+          onComplete: () => {
+            activeIndex = targetIndex;
+            // Set content
+            quoteEl.textContent = `"${testimonials[activeIndex].quote}"`;
+            authorEl.textContent = testimonials[activeIndex].author;
+            updateNavNumbers();
+            
+            // Set pre-enter translation
+            gsap.set([quoteEl, authorEl, '.testimonial-gold-line'], {
+              x: -moveDistance
+            });
+          }
+        });
+
+        // Fade in
+        tl.to([quoteEl, authorEl, '.testimonial-gold-line'], {
+          opacity: 1,
+          x: 0,
+          duration: 0.4,
+          ease: "power2.out"
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        const target = (activeIndex - 1 + testimonials.length) % testimonials.length;
+        slideTestimonial(target, 'prev');
+      });
+
+      nextBtn.addEventListener('click', () => {
+        const target = (activeIndex + 1) % testimonials.length;
+        slideTestimonial(target, 'next');
+      });
+
+      // Init first numbers
+      updateNavNumbers();
+    }
+
+    // ==========================================================================
+    // FLOATING LABELS INPUT STATE CONTROLLERS
+    // ==========================================================================
+    function setupContactInputs() {
+      const inputs = document.querySelectorAll('.form-group input, .form-group textarea, .form-group select');
+      
+      inputs.forEach(input => {
+        // Checking on start
+        if (input.value.trim() !== '') {
+          input.parentElement.classList.add('filled');
+        }
+
+        input.addEventListener('focus', () => {
+          input.parentElement.classList.add('focused');
+        });
+
+        input.addEventListener('blur', () => {
+          input.parentElement.classList.remove('focused');
+          if (input.value.trim() !== '') {
+            input.parentElement.classList.add('filled');
+          } else {
+            input.parentElement.classList.remove('filled');
+          }
+        });
+
+        // Specific fix for HTML Select
+        if (input.tagName.toLowerCase() === 'select') {
+          input.addEventListener('change', () => {
+            if (input.value !== '') {
+              input.parentElement.classList.add('filled');
+            } else {
+              input.parentElement.classList.remove('filled');
+            }
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>
